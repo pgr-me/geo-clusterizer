@@ -6,6 +6,8 @@ from pathlib import Path
 from loguru import logger
 import numpy as np
 import pandas as pd 
+import settings
+
 
 
 if __name__ == '__main__':
