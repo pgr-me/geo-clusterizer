@@ -1,10 +1,6 @@
 # Geoclusterizer
 
-## Overview
-
-The Geoclusterizer is a clustering routine that uses publicly-available data to group like geographical areas.
-
-The Geoclusterizer groups like geographical areas on the basis of publicly-available demographic data. We reduce the dimensionality of the dataset using the [LinearCorex](https://github.com/gregversteeg/LinearCorex) method and then fitting a [Gaussian Mixture Model](https://scikit-learn.org/stable/modules/mixture.html#) on that data to generate clusters of Census tracts.
+The Geoclusterizer is a clustering routine that uses publicly-available data to group like geographical areas. We reduce the dimensionality of the dataset using the [LinearCorex](https://github.com/gregversteeg/LinearCorex) method and then fitting a [Gaussian Mixture Model](https://scikit-learn.org/stable/modules/mixture.html#) on that data to generate clusters of Census tracts.
 
 ## Motivation
 
