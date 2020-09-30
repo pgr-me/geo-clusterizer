@@ -1,11 +1,16 @@
 # Geoclusterizer
-Clustering routine that uses publicly-available data to group like geographical areas
 
-Marketing professionals often use customer segmentation to serve more differentiated products and services to their customers. Traditionally, marketing analysts have used a set of heuristics and Excel-based analytical methods to segment customers. More recently, unsupervised learning techniques have been employed to segment / cluster customers at scale.
+## Overview
+
+The Geoclusterizer is a clustering routine that uses publicly-available data to group like geographical areas.
 
 The Geoclusterizer groups like geographical areas on the basis of publicly-available demographic data. We reduce the dimensionality of the dataset using the [LinearCorex](https://github.com/gregversteeg/LinearCorex) method and then fitting a [Gaussian Mixture Model](https://scikit-learn.org/stable/modules/mixture.html#) on that data to generate clusters of Census tracts.
 
-# Getting Started
+## Motivation
+
+Marketing professionals often use customer segmentation to serve more differentiated products and services to their customers. Traditionally, marketing analysts have used a set of heuristics and Excel-based analytical methods to segment customers. More recently, unsupervised learning techniques have been employed to segment / cluster customers at scale.
+
+## Getting Started
 
 Software dependencies: Install Anaconda and create a virtual environment using the environment.yml file.
 
