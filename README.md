@@ -18,6 +18,6 @@ Reproduce the results:
   * parse_acs: Parse downloaded ACS data into standalone tables
   * scale_and_impute_data: Scale dataset and impute missing data
   * select_n_components: Select number of components to use
-  * train_model: Train 
+  * train_model: Train Gaussian Mixture model on scaled, imputed data using selected number of components
 * To run all the tasks at once, simply cd into the repository and, if all packages have been installed correctly, type ```doit```
-* Outputs are saved in the data/processed directory, which is created by one of the tasks
+* Outputs are saved in the data/processed directory
