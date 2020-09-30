@@ -15,7 +15,7 @@ from settings import (
     LOOKUPS_SRC,
     PROCESSED_DIR,
 )
-from acs import ACS
+from src.acs import ACS
 
 
 if __name__ == "__main__":
@@ -58,14 +58,14 @@ if __name__ == "__main__":
         )
         parser.add_argument(
             "-s",
-            "acs_span",
+            "--acs_span",
             default=ACS_SPAN,
             help="Specify which year of ACS data you want",
             type=int,
         )
         parser.add_argument(
             "-y",
-            "acs_year",
+            "--acs_year",
             default=ACS_YEAR,
             help="Specify which year of ACS data you want",
             type=int,
@@ -86,10 +86,11 @@ if __name__ == "__main__":
     print("Get zips, geos, and lookups data")
     try:
         acs = ACS(
-            ACS_YEAR,
-            ACS_SPAN,
-            RAW_ACS_DATA_DIR,
-            INTERIM_DIR,
+            acs_year,
+            acs_span,
+            raw_acs_data_dir,
+            interim_dir,
+            lookups_input_src,
             overwrite=False,
             verbose=False,
         )
@@ -114,6 +115,16 @@ if __name__ == "__main__":
     print("Join tables")
     try:
         acs.join_tables()
+        logger.debug('Joined tables')
     except Exception:
         logger.error("Failed to join tables", exc_info=True)
+        raise
+
+    # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    print("Preprocess tables")
+    try:
+        acs.preprocess_tables()
+        logger.debug('Preprocessed tables')
+    except Exception:
+        logger.error("Failed to preprocess tables", exc_info=True)
         raise

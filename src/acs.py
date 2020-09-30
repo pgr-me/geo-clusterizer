@@ -50,7 +50,7 @@ class ACS:
         self.lookups = pd.DataFrame()
         self.acs_data = pd.DataFrame()
         self.acs_data_dst = self.interim_data_dir / "acs__tables.pkl"
-        self.acs_preprocessed_data_dst = (
+        self.preprocessed_acs_data_dst = (
             self.interim_data_dir / "acs__preprocessed_tables.pkl"
         )
 
@@ -285,10 +285,10 @@ class ACS:
 
         return True
 
-    def preprocess_tables(self, null_thresh=4000, states_only=True):
+    def preprocess_tables(self, null_thresh=20000, states_only=True):
         # TODO: Refactor the conditional so that it uses pydoit's dependency management framework
-        if self.acs_preprocessed_data_dst.exists() and (not self.overwrite):
-            self.preprocessed_acs_data = pd.read_pickle(self.acs_preprocessed_data_dst)
+        if self.preprocessed_acs_data_dst.exists() and (not self.overwrite):
+            self.preprocessed_acs_data = pd.read_pickle(self.preprocessed_acs_data_dst)
         else:
             m = self.acs_data.isnull().sum() < null_thresh
             self.preprocessed_acs_data = self.acs_data.copy()[m[m].index.values]
@@ -300,5 +300,7 @@ class ACS:
                 x.replace(",", "").replace("/", "").replace(".", "").replace(":", "")
                 for x in self.preprocessed_acs_data
             ]
-            self.preprocessed_acs_data.to_pickle(self.acs_preprocessed_data_dst)
+            ix = ['geoid', 'state_abbr', 'logrecno', 'geo_label']
+            self.preprocessed_acs_data = self.preprocessed_acs_data.reset_index().set_index(ix)
+            self.preprocessed_acs_data.to_pickle(self.preprocessed_acs_data_dst)
         return True

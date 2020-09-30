@@ -25,6 +25,8 @@ from settings import (
     ACS_YEAR,
     RAW_ACS_DATA_DIR,
     RAW_SHAPEFILES_DIR,
+    LOOKUPS_SRC,
+    RANDOM_STATE,
 )
 from src.acs import ACS
 
@@ -33,14 +35,18 @@ logger.add(LOG_PATH)
 
 @logger.catch
 def task_makedirs():
-    """Make directories if they don't exist"""
+    """Make directories if they don't exist
+    To run, cd into root dir and type `doit makedirs`.
+    """
     for dir_ in DIRS:
         yield dict(name=dir_, actions=[(create_folder, [dir_])], uptodate=[run_once])
 
 
 @logger.catch
 def task_get_tiger_files():
-    """Download and save TIGER shapefiles"""
+    """Download and save TIGER shapefiles.
+    To run, cd into root dir and type `doit get_tiger_files`.
+    """
 
     def get_zips(url, dst):
         r = requests.get(url)
@@ -72,8 +78,11 @@ def task_download_acs():
     This underlying code is from
     https://gist.githubusercontent.com/erikbern/89c5f44bd1354854a8954fa2df04453d/raw/efd7b7c31d781a5cae9849be60ab86967bf7d2ed/american_community_survey_example.py
     Author of that underlying code is Erik Bernhardsson | erikbern | https://gist.github.com/erikbern
+    To run, cd into root dir and type `doit download_acs`.
     """
-    acs = ACS(ACS_YEAR, ACS_SPAN, RAW_ACS_DATA_DIR, overwrite=False)
+    acs = ACS(
+        ACS_YEAR, ACS_SPAN, RAW_ACS_DATA_DIR, INTERIM_DIR, LOOKUPS_SRC, overwrite=False
+    )
     return dict(
         actions=[acs.get_acs_metadata, acs.get_acs_data],
         task_dep=["makedirs"],
@@ -85,10 +94,42 @@ def task_download_acs():
 @logger.catch
 def task_parse_acs():
     """Parse downloaded ACS data.
-    This underlying code is from
-    https://gist.githubusercontent.com/erikbern/89c5f44bd1354854a8954fa2df04453d/raw/efd7b7c31d781a5cae9849be60ab86967bf7d2ed/american_community_survey_example.py
-    Author of that underlying code is Erik Bernhardsson | erikbern | https://gist.github.com/erikbern
+    To run, cd into root dir and type `doit parse_acs`.
     """
-    cmd = f"python etl_acs.py"
-    return dict(actions=[cmd], task_dep=["makedirs"], verbosity=2, clean=True)
+    # TODO: Refactor so that parse_acs.py uses pydoit dependency manaagement framework
+    cmd = "python parse_acs.py"
+    # file_dep = f"{ACS_YEAR}_{ACS_SPAN}y_lookup.txt"
+    return dict(actions=[cmd], verbosity=2, clean=True)
 
+
+@logger.catch
+def task_scale_and_impute_data():
+    """Scale and impute missing data"""
+    i = INTERIM_DIR / "acs__preprocessed_tables.pkl"  # input_src, aka `i`
+    m = MODELS_DIR / "scaler_imputer.pkl"  # models_dst, aka `m`
+    o = PROCESSED_DIR / "scaled_imputed_data.pkl"  # output_dst, aka `o`
+    r = RANDOM_STATE  # random_state, aka `r`
+    cmd = f"python scale_impute.py -i {i} -m {m} -o {o} -r {r}"
+    return dict(actions=[cmd], file_dep=[i], targets=[o], verbosity=2, clean=True)
+
+
+@logger.catch
+def task_select_n_components():
+    """Select number of components to use"""
+    cmd = f"python scale.py"
+    target = "foo1"
+    file_dep = "bar"
+    return dict(
+        actions=[cmd], file_dep=[file_dep], targets=[target], verbosity=2, clean=True
+    )
+
+
+@logger.catch
+def task_train_model():
+    """Train model"""
+    cmd = f"python train_modeltrain_model"
+    target = "foo"
+    file_dep = "bar"
+    return dict(
+        actions=[cmd], file_dep=[file_dep], targets=[target], verbosity=2, clean=True
+    )

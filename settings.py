@@ -22,3 +22,5 @@ MODELS_DIR = ROOT_DIR / "models"
 LOG_PATH = ROOT_DIR / "log.log"
 LOOKUPS_SRC = ROOT_DIR / '2018_5y_lookup.txt'  # specify which tables you want by modifying this file
 DIRS = [DATA_DIR, RAW_DIR, RAW_ACS_DATA_DIR, RAW_SHAPEFILES_DIR, INTERIM_DIR, PROCESSED_DIR, MODELS_DIR]
+
+RANDOM_STATE = 777
