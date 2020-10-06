@@ -27,6 +27,10 @@ from settings import (
     RAW_SHAPEFILES_DIR,
     LOOKUPS_SRC,
     RANDOM_STATE,
+    CE_CUTOFF,
+    N_HIDDEN,
+    N_SAMPLES,
+    N_TRIALS,
 )
 from src.acs import ACS
 
@@ -115,13 +119,19 @@ def task_scale_and_impute_data():
 
 @logger.catch
 def task_select_n_components():
-    """Select number of components to use"""
-    cmd = f"python scale.py"
-    target = "foo1"
-    file_dep = "bar"
-    return dict(
-        actions=[cmd], file_dep=[file_dep], targets=[target], verbosity=2, clean=True
-    )
+    """Select number of components to use for dimensionality reduction"""
+    cmd = f"python select_n_components.py"
+    c = CE_CUTOFF 
+    d = N_HIDDEN
+    i = PROCESSED_DIR / "scaled_imputed_data.pkl"
+    n = N_SAMPLES
+    o = PROCESSED_DIR / "selected_n_components.json"
+    t = N_TRIALS
+    cmd = f"python select_n_components.py -c {c} -d {d} -i {i} -n {n} -o {o} -t {t}"
+    return dict(actions=[cmd], file_dep=[i], targets=[o], verbosity=2, clean=True)
+
+
+# TODO: #4 Add report generation task that creates a report of model summary statistics
 
 
 @logger.catch

@@ -24,3 +24,12 @@ LOOKUPS_SRC = ROOT_DIR / '2018_5y_lookup.txt'  # specify which tables you want b
 DIRS = [DATA_DIR, RAW_DIR, RAW_ACS_DATA_DIR, RAW_SHAPEFILES_DIR, INTERIM_DIR, PROCESSED_DIR, MODELS_DIR]
 
 RANDOM_STATE = 777
+
+# corex model constants
+N_HIDDEN = 20  # maximum number of corex components
+N_SAMPLES = 40000  # number of samples to draw for each trial
+CE_CUTOFF = 0.01  # cutoff used to select number of corex components
+N_TRIALS = 5  # number of model training trials
+
+# gaussian mixture components
+MAX_COMPONENTS_LIST = list(range(2, 20+1))
