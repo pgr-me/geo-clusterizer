@@ -32,4 +32,4 @@ CE_CUTOFF = 0.01  # cutoff used to select number of corex components
 N_TRIALS = 5  # number of model training trials
 
 # gaussian mixture components
-MAX_COMPONENTS_LIST = list(range(2, 20+1))
+MAX_COMPONENTS = 20
