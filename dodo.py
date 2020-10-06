@@ -31,6 +31,7 @@ from settings import (
     N_HIDDEN,
     N_SAMPLES,
     N_TRIALS,
+    MAX_COMPONENTS
 )
 from src.acs import ACS
 
@@ -121,7 +122,7 @@ def task_scale_and_impute_data():
 def task_select_n_components():
     """Select number of components to use for dimensionality reduction"""
     cmd = f"python select_n_components.py"
-    c = CE_CUTOFF 
+    c = CE_CUTOFF
     d = N_HIDDEN
     i = PROCESSED_DIR / "scaled_imputed_data.pkl"
     n = N_SAMPLES
@@ -134,12 +135,20 @@ def task_select_n_components():
 # TODO: #4 Add report generation task that creates a report of model summary statistics
 
 
-@logger.catch
-def task_train_model():
-    """Train model"""
-    cmd = f"python train_modeltrain_model"
-    target = "foo"
-    file_dep = "bar"
+def task_cluster():
+    """Train set of Gaussian Mixture models, select best one, and cluster tracts"""
+    src = PROCESSED_DIR / "scaled_imputed_data.pkl"
+    orig_src = INTERIM_DIR / "acs__preprocessed_tables.pkl"
+    corex_obj_src = PROCESSED_DIR / "selected_n_components.pkl"
+    gm_dst = MODELS_DIR / "gaussian_mixture.pkl"
+    ce_dst = MODELS_DIR / "corex.pkl"
+    labeled_dst = PROCESSED_DIR / "labeled.pkl"
+    labeled_orig_dst = PROCESSED_DIR / "labeled_orig.pkl"
+    cmd = f"python cluster.py"
     return dict(
-        actions=[cmd], file_dep=[file_dep], targets=[target], verbosity=2, clean=True
+        actions=[cmd],
+        file_dep=[src, orig_src, corex_obj_src],
+        targets=[gm_dst, ce_dst, labeled_dst, labeled_orig_dst],
+        verbosity=2,
+        clean=True,
     )
